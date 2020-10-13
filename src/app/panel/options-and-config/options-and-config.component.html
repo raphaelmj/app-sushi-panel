@@ -1,0 +1,46 @@
+<div class="row">
+  <div class="col-md-12">
+    <h2>Opcje konfiguracyjne (cena extra + dodatki)</h2>
+    <button mat-raised-button type="button" (click)="openAppConfig()">
+      <i class="fas fa-cogs"></i> Konfigurcja podstawowa
+    </button>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <hr>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-6">
+    <div class="align-items-center justify-content-between d-flex w-100">
+      <h2>Opcje opisowe</h2>
+      <div>
+        <button mat-raised-button type="button" color="primary" (click)="changeOrderStart(optionOrConfig.desc)">
+          Zmień kolejność
+        </button>
+        <button mat-raised-button type="button" color="primary" (click)="addOptionsGroup(optionOrConfig.desc)">
+          <i class="fas fa-plus"></i>
+        </button>
+      </div>
+    </div>
+    <hr>
+    <app-edit-desc [descOptions]="descOptions"></app-edit-desc>
+  </div>
+  <div class="col-md-6">
+    <div class="align-items-center justify-content-between d-flex w-100">
+      <h2>Opcje zamieniania</h2>
+      <div>
+        <button mat-raised-button type="button" color="primary" (click)="changeOrderStart(optionOrConfig.reverse)">
+          Zmień kolejność
+        </button>
+        <button mat-raised-button type="button" color="primary" (click)="addOptionsGroup(optionOrConfig.reverse)">
+          <i class="fas fa-plus"></i>
+        </button>
+      </div>
+    </div>
+    <hr>
+    <app-edit-reverse [reverseOptions]="reverseOptions"></app-edit-reverse>
+  </div>
+</div>
+<ng-template #temp></ng-template>
