@@ -27,6 +27,18 @@ const routes: Routes = [
       import('./options-and-config/options-and-config.module').then(m => m.OptionsAndConfigModule),
     canActivate: [RedirectIfNotauthGuard],
   },
+  {
+    path: 'orders-board',
+    loadChildren: () =>
+      import('./orders-board/orders-board.module').then(m => m.OrdersBoardModule),
+    canActivate: [RedirectIfNotauthGuard],
+  },
+  {
+    path: 'order-menu',
+    loadChildren: () =>
+      import('./order-menu/order-menu.module').then(m => m.OrderMenuModule),
+    canActivate: [RedirectIfNotauthGuard],
+  },
 ];
 
 @NgModule({

@@ -24,6 +24,10 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "aot": true,
+            "allowedCommonJsDependencies": [
+              "socket.io-client",
+              "bignumber.js"
+            ],
             "assets": [
               "src/favicon.ico",
               "src/assets"

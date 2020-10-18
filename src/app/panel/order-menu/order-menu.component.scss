@@ -1,0 +1,140 @@
+// @import '~@angular/material/theming';
+
+// @include mat-core();
+
+// // Define the palettes for your theme using the Material Design palettes available in palette.scss
+// // (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// // hue. Available color palettes: https://material.io/design/color/
+// $candy-app-primary: mat-palette($mat-indigo);
+// $candy-app-accent: mat-palette($mat-pink, A200, A100, A400);
+
+// // The warn palette is optional (defaults to red).
+// $candy-app-warn: mat-palette($mat-red);
+
+
+// // Create the theme object. A theme consists of configurations for individual
+// // theming systems such as `color` or `typography`.
+// $candy-app-theme: mat-light-theme((color: (primary: $candy-app-primary,
+//       accent: $candy-app-accent,
+//       warn: $candy-app-warn)));
+
+// // Include theme styles for core and each component used in your app.
+// // Alternatively, you can import and @include the theme mixins for each component
+// // that you are using.
+// @include angular-material-theme($candy-app-theme);
+
+
+.scroll-inside-view {
+  position: fixed;
+  left: 0;
+  top: 64px;
+  z-index: 22;
+  width: 100%;
+  height: calc(100% - 60px);
+  overflow-x: auto;
+  color: #fff;
+}
+
+.container-side {
+  height: calc(100vh - 64px);
+
+}
+
+.scroll-inside {
+  overflow-x: auto;
+  // background-color: #000;
+  height: calc(100vh - 105px);
+
+  .grid-menu {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+
+    .menu-bt-grid {
+      height: 110px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.6rem;
+      cursor: pointer;
+      text-align: center;
+    }
+  }
+}
+
+.min-menu {
+  display: flex;
+  flex-wrap: wrap;
+
+  .menu-bt-min {
+    padding: 5px 10px;
+    width: 33.33%;
+    font-size: 1rem;
+    cursor: pointer;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+mat-sidenav {
+  width: 480px;
+}
+
+
+::ng-deep.mat-drawer-container {
+  color: #fff;
+}
+
+::ng-deep.mat-drawer {
+  color: #fff;
+}
+
+::ng-deep.mat-tab-header {
+  display: none !important;
+}
+
+::ng-deep.mat-tab-label,
+::ng-deep.mat-tab-label-active {
+  padding: 0 10px !important;
+  min-width: 40px !important;
+}
+
+::ng-deep.mat-tab-label,
+::ng-deep.mat-tab-label-active {
+  padding: 0 10px !important;
+  min-width: 40px !important;
+}
+
+
+::ng-deep.mat-tab-label-content {
+  color: #FFF;
+}
+
+::ng-deep.mat-tab-group.mat-primary {
+  background-color: #000000;
+}
+
+::ng-deep.mat-tab-group.mat-primary .mat-ink-bar {
+  background-color: #ffffff;
+}
+
+::ng-deep.mat-drawer-inner-container {
+  background-color: #000;
+}
+
+::ng-deep.mat-tab-header-pagination-disabled .mat-tab-header-pagination-chevron {
+  border-color: #ffffff;
+}
+
+::ng-deep.mat-tab-header-pagination-chevron {
+  border-color: #ffffff;
+}
+
+
+//ViewEncapsulation.None
+// .mat-tab-label,
+// .mat-tab-label-active {
+//   padding: 0 10px !important;
+//   min-width: 40px !important;
+// }

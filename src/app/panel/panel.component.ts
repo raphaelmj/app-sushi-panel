@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
+
 @Component({
   selector: 'app-panel',
   templateUrl: './panel.component.html',
@@ -7,7 +8,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PanelComponent implements OnInit {
 
-  constructor() { }
+  constructor() {
 
-  ngOnInit(): void { }
+  }
+
+  ngOnInit(): void {
+
+  }
 }

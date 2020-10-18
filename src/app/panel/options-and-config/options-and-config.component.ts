@@ -1,3 +1,4 @@
+import { UserService } from './../../services/auth/user.service';
 import { AddOptionElementComponent } from './add-option-element/add-option-element.component';
 import { ChangeOptionsGroupOrderComponent } from './change-options-group-order/change-options-group-order.component';
 import { AppConfigService } from './../../services/options-config/app-config.service';
@@ -11,6 +12,8 @@ import { Component, OnDestroy, OnInit, ViewChild, ViewContainerRef, ComponentRef
 import { ReverseOptions } from 'src/app/models/reverse-option';
 import { AppConfig } from 'src/app/models/app-config';
 import { AppConfigEditComponent } from './app-config-edit/app-config-edit.component';
+import { User } from 'src/app/models/user';
+import { UsersAdminComponent } from './users-admin/users-admin.component';
 
 @Component({
   selector: 'app-options-and-config',
@@ -21,6 +24,7 @@ export class OptionsAndConfigComponent implements OnInit, OnDestroy {
 
   @ViewChild('temp', { read: ViewContainerRef }) temp: ViewContainerRef
   changeOR: ComponentRef<ChangeOptionsGroupOrderComponent>
+  usersAdminC: ComponentRef<UsersAdminComponent>
   addOC: ComponentRef<AddOptionElementComponent>
   appConfigEditC: ComponentRef<AppConfigEditComponent>
   reverseOptions: ReverseOptions[]
@@ -31,6 +35,7 @@ export class OptionsAndConfigComponent implements OnInit, OnDestroy {
   subReverse: Subscription
   subConfig: Subscription
   optionOrConfig = OptionOrConfig
+  currentUser: User = null
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -38,11 +43,13 @@ export class OptionsAndConfigComponent implements OnInit, OnDestroy {
     private descOptionsService: DescOptionsService,
     private reverseOptionsService: ReverseOptionsService,
     private appConfigService: AppConfigService,
-    private cf: ComponentFactoryResolver
+    private cf: ComponentFactoryResolver,
+    private userService: UserService
   ) {
     this.appConfig = this.activatedRoute.snapshot.data['appConfig']
     this.reverseOptions = this.activatedRoute.snapshot.data['reverseOptions']
     this.descOptions = this.activatedRoute.snapshot.data['descOptions']
+    this.currentUser = this.activatedRoute.snapshot.data['currentUser']
   }
 
 
@@ -124,6 +131,26 @@ export class OptionsAndConfigComponent implements OnInit, OnDestroy {
     this.appConfigEditC.instance.emitClose.subscribe(e => {
       this.appConfigEditC.destroy()
     })
+  }
+
+
+  async openPasswordsUsers() {
+    this.temp.clear()
+    if (this.currentUser.permission == 'superadmin') {
+      var users: User[] = await this.getUsers()
+      let a = this.cf.resolveComponentFactory(<Type<UsersAdminComponent>>UsersAdminComponent);
+      this.usersAdminC = this.temp.createComponent(a)
+      this.usersAdminC.instance.users = users
+      this.usersAdminC.instance.currentUser = this.currentUser
+      this.usersAdminC.instance.emitClose.subscribe(r => {
+        this.usersAdminC.destroy()
+      })
+    }
+  }
+
+
+  private async getUsers(): Promise<User[]> {
+    return this.userService.getUsers().toPromise()
   }
 
 

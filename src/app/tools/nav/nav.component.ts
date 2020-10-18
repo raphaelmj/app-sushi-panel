@@ -1,6 +1,6 @@
-import { UserService } from './../services/auth/user.service';
-import { NavService } from './../services/auth/nav.service';
-import { API_URL } from './../config';
+import { UserService } from './../../services/auth/user.service';
+import { NavService } from './../../services/auth/nav.service';
+import { API_URL } from './../../config';
 import { Component, OnInit } from '@angular/core';
 // import { NavService } from '../services/auth/nav.service';
 // import { UserService } from '../services/auth/user.service';
@@ -19,7 +19,7 @@ export class NavComponent implements OnInit {
     private navService: NavService,
     private userService: UserService,
     private router: Router,
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.navService.showNav$.subscribe((res) => {

@@ -14,10 +14,12 @@ import { ChangeStringsOrderComponent } from './change-strings-order/change-strin
 import { ChangeOptionsGroupOrderComponent } from './change-options-group-order/change-options-group-order.component';
 import { AddOptionElementComponent } from './add-option-element/add-option-element.component';
 import { AppConfigEditComponent } from './app-config-edit/app-config-edit.component';
+import { UsersAdminComponent } from './users-admin/users-admin.component';
+import { UserOneEditComponent } from './users-admin/user-one-edit/user-one-edit.component';
 
 
 @NgModule({
-  declarations: [OptionsAndConfigComponent, EditDescComponent, EditReverseComponent, DescDataFormComponent, ReverseDataFormComponent, ChangeStringsOrderComponent, ChangeOptionsGroupOrderComponent, AddOptionElementComponent, AppConfigEditComponent],
+  declarations: [OptionsAndConfigComponent, EditDescComponent, EditReverseComponent, DescDataFormComponent, ReverseDataFormComponent, ChangeStringsOrderComponent, ChangeOptionsGroupOrderComponent, AddOptionElementComponent, AppConfigEditComponent, UsersAdminComponent, UserOneEditComponent],
   imports: [
     CommonModule,
     MaterialModule,
