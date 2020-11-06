@@ -1,3 +1,4 @@
+import { BonusType } from './../../models/cart-order';
 import { API_URL } from '../../config';
 import { QuickStats } from './../../models/quick-stats';
 import { Injectable } from '@angular/core';
@@ -85,6 +86,10 @@ export class OrderService {
 
   bonusSetUnset(id: number, bonusUsed: boolean): Promise<any> {
     return this.httpClient.post(API_URL + '/api/orders/order/bonus/change?uuid=' + this.uuid, { id, bonusUsed }).toPromise()
+  }
+
+  bonusTypeSetUnset(id: number, bonusUsed: boolean, bonusType: BonusType, percent: number): Promise<any> {
+    return this.httpClient.post(API_URL + '/api/orders/order/bonus/type/change?uuid=' + this.uuid, { id, bonusUsed, bonusType, percent }).toPromise()
   }
 
   removeOrderElement(id: number, orderId: number) {

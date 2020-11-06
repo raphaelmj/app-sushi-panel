@@ -38,27 +38,26 @@
         </mat-tab>
         <ng-container *ngFor="let mc of menuElementsFull; let i = index">
           <mat-tab [label]="mc.name | uppercase">
-            <div class="menu-columns-view">
+            <div class="menu-columns-view" [ngStyle]="{'margin-top': (menuElementsFull.length/divNumber)*36+'px'}">
               <ng-container *ngFor="let item of mc.elements">
                 <ng-container [ngSwitch]="item.elementType">
                   <ng-container *ngSwitchCase="'one_name'">
-                    <!-- <app-one-name-bt></app-one-name-bt> -->
-                    <div app-one-name-bt></div>
+                    <div class="element-add" app-one-name-bt [element]="item"></div>
                   </ng-container>
                   <ng-container *ngSwitchCase="'many_names'">
-                    <app-many-names-bt></app-many-names-bt>
+                    <div class="element-add-100" app-many-names-bt [element]="item"></div>
                   </ng-container>
                   <ng-container *ngSwitchCase="'desc_elements'">
-                    <app-desc-elements-bt></app-desc-elements-bt>
+                    <div class="element-add-100 no-border" app-desc-elements-bt [element]="item"></div>
                   </ng-container>
                   <ng-container *ngSwitchCase="'config_price'">
-                    <app-config-price-bt></app-config-price-bt>
+                    <div class="element-add-100" app-config-price-bt [element]="item"></div>
                   </ng-container>
                   <ng-container *ngSwitchCase="'config_steps_price'">
-                    <app-config-steps-bt></app-config-steps-bt>
+                    <div class="element-add" app-config-steps-bt [element]="item"></div>
                   </ng-container>
                   <ng-container *ngSwitchCase="'config_steps_price_many'">
-                    <app-config-steps-many-bt></app-config-steps-many-bt>
+                    <div class="element-add" app-config-steps-many-bt [element]="item"></div>
                   </ng-container>
                 </ng-container>
               </ng-container>

@@ -1,3 +1,4 @@
+import { OrdersToolsModule } from './../../orders-tools/orders-tools.module';
 import { PipesModule } from './../../pipes/pipes.module';
 import { MaterialModule } from './../../shared/material.module';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -22,7 +23,8 @@ import { OrderSquareElementComponent } from './order-board-square/order-square-e
     ReactiveFormsModule,
     MaterialModule,
     ToolsModule,
-    PipesModule
+    PipesModule,
+    OrdersToolsModule
   ]
 })
 export class OrdersBoardModule { }

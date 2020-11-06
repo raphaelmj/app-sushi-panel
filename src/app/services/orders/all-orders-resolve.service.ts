@@ -1,3 +1,5 @@
+import { AppConfig, FilterState } from './../../models/app-config';
+import { DataService } from './../data.service';
 import { UserToken } from './../../models/token-user';
 import { User } from '../../models/user';
 import { UserService } from './../auth/user.service';
@@ -14,11 +16,12 @@ import * as moment from "moment"
 })
 export class AllOrdersResolveService implements Resolve<{ orders: CartOrder[], total: number, qp: OrderQueryParams, reservations: number, archives: number, inProgress: number }> {
 
-  constructor(private orderService: OrderService, private userService: UserService) { }
+  constructor(private orderService: OrderService, private userService: UserService, private dataService: DataService) { }
 
   async resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<{ orders: CartOrder[], total: number, qp: OrderQueryParams, reservations: number, archives: number, inProgress: number }> {
 
     const user: UserToken | null = await this.userService.getCurrentUserTokenData().toPromise()
+    const appConfig: AppConfig = await this.dataService.getAppConfig().toPromise()
     var data: OrderQueryParams
 
     var d: Date = new Date()
@@ -35,22 +38,22 @@ export class AllOrdersResolveService implements Resolve<{ orders: CartOrder[], t
 
         case "admin":
 
-          data = this.getParamsAdmin(route, dayString)
+          data = this.getParamsAdmin(route, dayString, appConfig.data.defaultFiltersStates.admin)
 
           break;
 
         case "waiter":
-          data = this.getParamsWaiter(route, dayString)
+          data = this.getParamsWaiter(route, dayString, appConfig.data.defaultFiltersStates.admin)
           break;
 
         default:
-          data = this.getParamsWaiter(route, dayString)
+          data = this.getParamsWaiter(route, dayString, appConfig.data.defaultFiltersStates.admin)
           break
 
       }
 
     } else {
-      data = this.getParamsWaiter(route, dayString)
+      data = this.getParamsWaiter(route, dayString, appConfig.data.defaultFiltersStates.admin)
     }
 
     return await this.orderService.getOrders(data).toPromise()
@@ -58,23 +61,25 @@ export class AllOrdersResolveService implements Resolve<{ orders: CartOrder[], t
   }
 
 
-  getParamsAdmin(route: ActivatedRouteSnapshot, dayString: string): OrderQueryParams {
+  getParamsAdmin(route: ActivatedRouteSnapshot, dayString: string, fstate: FilterState): OrderQueryParams {
+    var stsJoin = fstate.sts.join('|')
     let page = (route.queryParams['page']) ? route.queryParams['page'] : 1
-    let sts = ''
+    let sts = (route.queryParams['sts']) ? route.queryParams['sts'] : stsJoin
     let day = (route.queryParams['day']) ? route.queryParams['day'] : dayString
-    let paid: 'all' | '0' | '1' | 'none' = '0'
-    let reservation: '0' | '1' | 'all' = '0'
-    let inprogress: '0' | '1' | 'all' = '1'
+    let paid: 'all' | '0' | '1' | 'none' = (route.queryParams['paid']) ? route.queryParams['paid'] : fstate.paid
+    let reservation: '0' | '1' | 'all' = (route.queryParams['reservation']) ? route.queryParams['reservation'] : fstate.reservation
+    let inprogress: '0' | '1' | 'all' = (route.queryParams['inprogress']) ? route.queryParams['inprogress'] : fstate.inprogress
     return { page, sts, day, paid, reservation, inprogress }
   }
 
-  getParamsWaiter(route: ActivatedRouteSnapshot, dayString: string): OrderQueryParams {
+  getParamsWaiter(route: ActivatedRouteSnapshot, dayString: string, fstate: FilterState): OrderQueryParams {
+    var stsJoin = fstate.sts.join('|')
     let page = (route.queryParams['page']) ? route.queryParams['page'] : 1
-    let sts = (route.queryParams['sts']) ? route.queryParams['sts'] : 'create|ready'
+    let sts = (route.queryParams['sts']) ? route.queryParams['sts'] : stsJoin
     let day = (route.queryParams['day']) ? route.queryParams['day'] : dayString
-    let paid: 'all' | '0' | '1' | 'none' = (route.queryParams['paid']) ? route.queryParams['paid'] : '0'
-    let reservation: '0' | '1' | 'all' = (route.queryParams['reservation']) ? route.queryParams['reservation'] : 'all'
-    let inprogress: '0' | '1' | 'all' = (route.queryParams['inprogress']) ? route.queryParams['inprogress'] : 'all'
+    let paid: 'all' | '0' | '1' | 'none' = (route.queryParams['paid']) ? route.queryParams['paid'] : fstate.paid
+    let reservation: '0' | '1' | 'all' = (route.queryParams['reservation']) ? route.queryParams['reservation'] : fstate.reservation
+    let inprogress: '0' | '1' | 'all' = (route.queryParams['inprogress']) ? route.queryParams['inprogress'] : fstate.inprogress
     return { page, sts, day, paid, reservation, inprogress }
   }
 

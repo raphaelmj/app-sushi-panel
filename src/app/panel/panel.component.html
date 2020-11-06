@@ -26,5 +26,9 @@
     <h2>Rezerwacje</h2>
     <a class="nav-link" [routerLink]="['/panel/orders-board/reservations']"></a>
   </div> -->
-
+  <div class="col-md-4 bt-section" *ngIf="showIfSuper">
+    <i class="fas fa-chart-bar"></i>
+    <h2>Statystyki</h2>
+    <a class="nav-link" [routerLink]="['/panel/stats']"></a>
+  </div>
 </div>

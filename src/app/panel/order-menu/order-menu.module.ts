@@ -1,3 +1,4 @@
+import { WindowService } from './../../services/window.service';
 import { OrderToolsModule } from './order-tools/order-tools.module';
 import { PipesModule } from './../../pipes/pipes.module';
 import { ToolsModule } from './../../tools/tools.module';
@@ -21,6 +22,9 @@ import { OrderMenuComponent } from './order-menu.component';
     ToolsModule,
     PipesModule,
     OrderToolsModule
+  ],
+  providers: [
+    WindowService
   ]
 })
 export class OrderMenuModule { }

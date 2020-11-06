@@ -92,10 +92,10 @@
           <i class="fas fa-check"></i>&nbsp;Odznacz got.
         </ng-container>
       </div>
-      <div class="bon-action" [ngClass]="{ 'bonus-used': order.bonusUsed }" (click)="setBonus()">
+      <div class="bon-action" [ngClass]="{ 'bonus-used': order.bonusUsed }" (click)="showBonusConfig()">
         Bon
       </div>
-      <div class="paid-action" [ngClass]="{ 'order-paid': order.paid }" (click)="setPaid()">
+      <div class="paid-action" [ngClass]="{ 'order-paid': order.paid }" (click)="showBonusConfig()">
         <ng-container *ngIf="order.paid">
           <i class="fas fa-money-bill-alt"></i>&nbsp;Zap.
         </ng-container>

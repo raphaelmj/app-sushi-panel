@@ -5,4 +5,5 @@ export interface UserToken {
   nick: string;
   role?: UserRole | string;
   permission?: UserPerm
+  exp?: number
 }

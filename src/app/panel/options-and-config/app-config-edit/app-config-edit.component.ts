@@ -1,6 +1,9 @@
+import { OrderStatus } from './../../../models/cart-order';
+import { AppConfigData, ACElementConfig, QueryStringState, FilterStatesByRole } from './../../../models/app-config';
+import { CalculateService } from './../../../services/calculate/calculate.service';
 import { OptionOrConfig, RefreshOptionsOrConfigService } from './../../../services/options-config/refresh-options-or-config.service';
 import { AppConfigService } from './../../../services/options-config/app-config.service';
-import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AppConfig } from 'src/app/models/app-config';
 
@@ -14,11 +17,17 @@ export class AppConfigEditComponent implements OnInit {
   @Output() emitClose: EventEmitter<any> = new EventEmitter()
   @Input() appConfig: AppConfig
   formData: FormGroup
+  statesTypes: Array<{ name: string, value: QueryStringState }> = [
+    { name: 'Brak', value: QueryStringState.none },
+    { name: 'Tylko', value: QueryStringState.restrict },
+    { name: 'Wszystko', value: QueryStringState.all }
+  ]
 
   constructor(
     private fb: FormBuilder,
     private appConfigService: AppConfigService,
-    private refreshOptionsOrConfigService: RefreshOptionsOrConfigService
+    private refreshOptionsOrConfigService: RefreshOptionsOrConfigService,
+    private calculateService: CalculateService
   ) { }
 
   ngOnInit(): void {
@@ -28,8 +37,43 @@ export class AppConfigEditComponent implements OnInit {
   createForm() {
     this.formData = this.fb.group({
       extraPrice: [this.appConfig.data.extraPrice, [Validators.required, Validators.pattern('[0-9]+')]],
-      acc: this.createArray(this.appConfig.data.acc)
+      inProgressMinutes: this.appConfig.data.inProgressMinutes,
+      acc: this.createArray(this.appConfig.data.acc),
+      bonusPercents: this.createBonusArray(this.appConfig.data.bonusPercents),
+      defaultFiltersStates: this.fb.group({
+        waiter: this.fb.group({
+          sts: this.createStatesArray(this.appConfig.data.defaultFiltersStates.waiter.sts),
+          paid: [this.appConfig.data.defaultFiltersStates.waiter.paid],
+          reservation: [this.appConfig.data.defaultFiltersStates.waiter.reservation],
+          inprogress: [this.appConfig.data.defaultFiltersStates.waiter.inprogress]
+        }),
+        admin: this.fb.group({
+          sts: this.createStatesArray(this.appConfig.data.defaultFiltersStates.admin.sts),
+          paid: [this.appConfig.data.defaultFiltersStates.admin.paid],
+          reservation: [this.appConfig.data.defaultFiltersStates.admin.reservation],
+          inprogress: [this.appConfig.data.defaultFiltersStates.admin.inprogress]
+        })
+      })
     })
+  }
+
+  createBonusArray(bonusPercents: number[]): FormArray {
+    var array = this.fb.array([])
+    bonusPercents.map(b => {
+      array.push(new FormControl(b))
+    })
+    return array
+  }
+
+
+  addPercentBonus() {
+    (this.formData.get('bonusPercents') as FormArray).push(new FormControl(0, [Validators.required, Validators.pattern('[0-9]+')]));
+    this.formData.markAsUntouched()
+  }
+
+  removePercentBonus(i: number) {
+    this.formData.get('bonusPercents')['controls'].splice(i, 1)
+    this.formData.get('bonusPercents')['value'].splice(i, 1)
   }
 
   createArray(acc: Array<{ name: string, icon: string }>): FormArray {
@@ -42,6 +86,7 @@ export class AppConfigEditComponent implements OnInit {
     })
     return array
   }
+
 
 
   addAcc() {
@@ -59,12 +104,52 @@ export class AppConfigEditComponent implements OnInit {
   }
 
 
+  createStatesArray(sts: Array<OrderStatus>): FormArray {
+    var array = this.fb.array([])
+    sts.map(s => {
+      array.push(new FormControl(s))
+    })
+    return array
+  }
+
+  changeWaiterStates(event: Array<OrderStatus>) {
+    this.formData.get('defaultFiltersStates').get('waiter').get('sts')['controls'].splice(0, this.formData.get('defaultFiltersStates').get('waiter').get('sts').value.length)
+    this.formData.get('defaultFiltersStates').get('waiter').get('sts')['value'].splice(0, this.formData.get('defaultFiltersStates').get('waiter').get('sts').value.length)
+    event.map(s => {
+      (this.formData.get('defaultFiltersStates').get('waiter').get('sts') as FormArray).push(new FormControl(s))
+    })
+  }
+
+  changeAdminStates(event: Array<OrderStatus>) {
+    this.formData.get('defaultFiltersStates').get('admin').get('sts')['controls'].splice(0, this.formData.get('defaultFiltersStates').get('waiter').get('sts').value.length)
+    this.formData.get('defaultFiltersStates').get('admin').get('sts')['value'].splice(0, this.formData.get('defaultFiltersStates').get('waiter').get('sts').value.length)
+    event.map(s => {
+      (this.formData.get('defaultFiltersStates').get('admin').get('sts') as FormArray).push(new FormControl(s))
+    })
+  }
+
+
   saveData() {
     if (this.formData.valid) {
-      let app: AppConfig = { ...this.appConfig, ...{ data: this.formData.value } }
+
+      var value: {
+        extraPrice: string | number,
+        acc: ACElementConfig[],
+        bonusPercents: any[],
+        inProgressMinutes: string | number,
+        defaultFiltersStates: FilterStatesByRole
+      } = Object.assign({}, this.formData.value)
+      value.extraPrice = this.calculateService.stringToNumber(value.extraPrice);
+      value.inProgressMinutes = this.calculateService.stringToNumber(value.inProgressMinutes);
+      value.bonusPercents.map((d, i) => {
+        value.bonusPercents[i] = this.calculateService.stringToNumber(d)
+      })
+      var data = { ...this.appConfig.data, ...value }
+      let app: AppConfig = { ...this.appConfig, ...{ data: <AppConfigData>data } }
       this.appConfigService.update(app).then(r => {
         this.refreshOptionsOrConfigService.makeRefresh(OptionOrConfig.config)
       })
+
     }
   }
 

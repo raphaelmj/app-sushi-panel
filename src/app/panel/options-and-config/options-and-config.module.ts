@@ -16,10 +16,11 @@ import { AddOptionElementComponent } from './add-option-element/add-option-eleme
 import { AppConfigEditComponent } from './app-config-edit/app-config-edit.component';
 import { UsersAdminComponent } from './users-admin/users-admin.component';
 import { UserOneEditComponent } from './users-admin/user-one-edit/user-one-edit.component';
+import { StatusStatesSelectComponent } from './app-config-edit/status-states-select/status-states-select.component';
 
 
 @NgModule({
-  declarations: [OptionsAndConfigComponent, EditDescComponent, EditReverseComponent, DescDataFormComponent, ReverseDataFormComponent, ChangeStringsOrderComponent, ChangeOptionsGroupOrderComponent, AddOptionElementComponent, AppConfigEditComponent, UsersAdminComponent, UserOneEditComponent],
+  declarations: [OptionsAndConfigComponent, EditDescComponent, EditReverseComponent, DescDataFormComponent, ReverseDataFormComponent, ChangeStringsOrderComponent, ChangeOptionsGroupOrderComponent, AddOptionElementComponent, AppConfigEditComponent, UsersAdminComponent, UserOneEditComponent, StatusStatesSelectComponent],
   imports: [
     CommonModule,
     MaterialModule,

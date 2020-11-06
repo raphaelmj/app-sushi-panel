@@ -1,3 +1,4 @@
+import { PipesModule } from './../../../pipes/pipes.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OneNameBtComponent } from './menu-list-btns/one-name-bt/one-name-bt.component';
@@ -19,7 +20,8 @@ import { ConfigStepsManyBtComponent } from './menu-list-btns/config-steps-many-b
     ConfigStepsManyBtComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    PipesModule
   ],
   exports: [
     OneNameBtComponent,

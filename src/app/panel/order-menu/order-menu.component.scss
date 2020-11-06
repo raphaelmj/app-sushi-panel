@@ -31,32 +31,43 @@
   z-index: 22;
   width: 100%;
   height: calc(100% - 60px);
-  overflow-x: auto;
   color: #fff;
+
+  @media(max-width: 599.98px) {
+    top: 56px;
+  }
 }
 
 .container-side {
   height: calc(100vh - 64px);
 
+  @media(max-width: 599.98px) {
+    height: calc(100vh - 56px);
+  }
 }
 
 .scroll-inside {
   overflow-x: auto;
   // background-color: #000;
-  height: calc(100vh - 105px);
+  // height: calc(100vh - 105px);
 
   .grid-menu {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
 
     .menu-bt-grid {
-      height: 110px;
+      min-height: 110px;
       display: flex;
       justify-content: center;
       align-items: center;
       font-size: 1.6rem;
       cursor: pointer;
       text-align: center;
+
+      @media(max-width: 599.98px) {
+        font-size: 1.2rem;
+        min-height: 70px;
+      }
     }
   }
 }
@@ -64,21 +75,63 @@
 .min-menu {
   display: flex;
   flex-wrap: wrap;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-color: #4e412c;
+  z-index: 99;
 
   .menu-bt-min {
     padding: 5px 10px;
     width: 33.33%;
-    font-size: 1rem;
+    font-size: 0.9rem;
     cursor: pointer;
     text-align: center;
     display: flex;
     justify-content: center;
     align-items: center;
+
+    @media(max-width: 599.98px) {
+      width: 50%;
+    }
   }
 }
 
 mat-sidenav {
   width: 480px;
+
+  @media(max-width: 599.98px) {
+    width: 320px;
+  }
+}
+
+
+.menu-columns-view {
+  display: flex;
+  flex-wrap: wrap;
+  overflow-x: auto;
+
+  .element-add {
+    width: 50%;
+    display: flex;
+    flex-wrap: wrap;
+    border-right: 1px solid #FFF;
+    border-bottom: 1px solid #FFF;
+  }
+
+  .element-add-100 {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    border-right: 1px solid #FFF;
+    border-bottom: 1px solid #FFF;
+  }
+
+  .element-add.no-border,
+  .element-add-100.no-border {
+    border-right: none;
+    border-bottom: none;
+  }
 }
 
 
@@ -112,7 +165,7 @@ mat-sidenav {
 }
 
 ::ng-deep.mat-tab-group.mat-primary {
-  background-color: #000000;
+  background-color: #4e412c;
 }
 
 ::ng-deep.mat-tab-group.mat-primary .mat-ink-bar {
@@ -120,7 +173,7 @@ mat-sidenav {
 }
 
 ::ng-deep.mat-drawer-inner-container {
-  background-color: #000;
+  background-color: #4e412c;
 }
 
 ::ng-deep.mat-tab-header-pagination-disabled .mat-tab-header-pagination-chevron {

@@ -1,3 +1,6 @@
+import { AppConfig } from 'src/app/models/app-config';
+import { CalculateService } from './../../../services/calculate/calculate.service';
+import { BonusSetConfigComponent, BonusResponseData } from './../../../orders-tools/bonus-set-config/bonus-set-config.component';
 import { SelectTimeComponent, TimeModel } from './../../../tools/select-time/select-time.component';
 import { SelectOption, SelectOptionComponent, SelectOptionsInputData } from './../../../tools/material-dialog/select-option/select-option.component';
 import { ConfirmByInputDataComponent, InputConfirmType, InputConfirmResponse } from './../../../tools/confirm-by-input-data/confirm-by-input-data.component';
@@ -6,7 +9,7 @@ import { RefreshOrdersService } from './../../../services/refresh-orders.service
 import { OrderService } from './../../../services/orders/order.service';
 import { element } from 'protractor';
 import { OrderElementStatusChangeRefreshService } from './../../../services/socket-oi/order-element-status-change-refresh.service';
-import { DatePosition, OrderStatus, OrderActionTypeNames, OrderActionType, OrderStatusName } from './../../../models/cart-order';
+import { DatePosition, OrderStatus, OrderActionTypeNames, OrderActionType, OrderStatusName, BonusType } from './../../../models/cart-order';
 import { Component, Input, OnInit, OnDestroy, ViewChild, ViewContainerRef, ComponentRef, ComponentFactoryResolver, Type } from '@angular/core';
 import { interval, Subscription } from 'rxjs';
 import { CartOrder } from 'src/app/models/cart-order';
@@ -27,8 +30,12 @@ export class OrderBoardSquareComponent implements OnInit, OnDestroy {
   confirmC: ComponentRef<ConfirmWindowComponent>
   confirmInputC: ComponentRef<ConfirmByInputDataComponent>
   selectTimeC: ComponentRef<SelectTimeComponent>
+  bonusSetConfigC: ComponentRef<BonusSetConfigComponent>
   @Input() order: CartOrder
   @Input() day: Date;
+  @Input() appConfig: AppConfig
+  baseTotal: number
+  bonusType = BonusType
 
   subInterval: Subscription;
   subStatusChange: Subscription
@@ -37,6 +44,8 @@ export class OrderBoardSquareComponent implements OnInit, OnDestroy {
   subPlusMinutesDialog: Subscription
   subTimeClose: Subscription
   subTimeChange: Subscription
+  subBonusClose: Subscription
+  subBonusChange: Subscription
   datePosition: DatePosition
   diff: DateDiff;
   isOrderInfoEmpty: boolean = true
@@ -46,7 +55,8 @@ export class OrderBoardSquareComponent implements OnInit, OnDestroy {
     private orderService: OrderService,
     private refreshOrdersService: RefreshOrdersService,
     private cf: ComponentFactoryResolver,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private calculateService: CalculateService
   ) { }
 
   ngOnInit(): void {
@@ -238,6 +248,27 @@ export class OrderBoardSquareComponent implements OnInit, OnDestroy {
     })
   }
 
+  showBonusConfig() {
+
+    this.temp.clear()
+    let conf = this.cf.resolveComponentFactory(<Type<BonusSetConfigComponent>>BonusSetConfigComponent)
+    this.bonusSetConfigC = this.temp.createComponent<BonusSetConfigComponent>(conf)
+    this.bonusSetConfigC.instance.total = this.calculateService.stringToNumber(this.order.total)
+    this.bonusSetConfigC.instance.currentBonusType = this.order.bonusType
+    this.bonusSetConfigC.instance.currentBonusPrice = this.order.currentBonusPrice
+    this.bonusSetConfigC.instance.currentBonusPercent = this.order.currentBonusPercent
+    this.bonusSetConfigC.instance.appConfig = this.appConfig
+    this.subBonusChange = this.bonusSetConfigC.instance.emitChange.subscribe((d: BonusResponseData) => {
+      var bonusUsed: boolean = (d.bonusType == BonusType.none) ? false : true
+      this.orderService.bonusTypeSetUnset(this.order.id, bonusUsed, d.bonusType, d.currentBonusPercent).then(r => {
+
+      })
+      this.bonusSetConfigC.destroy()
+    })
+    this.subBonusClose = this.bonusSetConfigC.instance.emitClose.subscribe(r => {
+      this.bonusSetConfigC.destroy()
+    })
+  }
 
   setBonus() {
 
@@ -286,6 +317,8 @@ export class OrderBoardSquareComponent implements OnInit, OnDestroy {
     if (this.subPlusMinutesDialog) this.subPlusMinutesDialog.unsubscribe()
     if (this.subTimeClose) this.subTimeClose.unsubscribe()
     if (this.subTimeChange) this.subTimeChange.unsubscribe()
+    if (this.subBonusClose) this.subBonusClose.unsubscribe()
+    if (this.subBonusChange) this.subBonusChange.unsubscribe()
   }
 
 }

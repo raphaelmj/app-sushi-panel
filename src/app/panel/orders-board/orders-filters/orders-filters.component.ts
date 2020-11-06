@@ -1,4 +1,6 @@
-import { DEFAULT_ORDERS_QUERY_PARAMS } from './../../../config';
+import { AppConfig, FilterState } from './../../../models/app-config';
+import { UserRole } from './../../../models/user';
+import { UserToken } from './../../../models/token-user';
 import { OrderStatus, OrderStatusName } from './../../../models/cart-order';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { OrderQueryParams } from '../../../models/order-query-params';
@@ -23,6 +25,8 @@ export class OrdersFiltersComponent implements OnInit, OnDestroy, AfterContentIn
   @Output() changeFilters: EventEmitter<OrderQueryParams> = new EventEmitter<OrderQueryParams>()
 
   @Input() oQP: OrderQueryParams;
+  @Input() userToken: UserToken;
+  @Input() appConfig: AppConfig;
   @Input() reservations: number = 0
   @Input() archives: number = 0
   @Input() inProgress: number = 0
@@ -122,7 +126,7 @@ export class OrdersFiltersComponent implements OnInit, OnDestroy, AfterContentIn
       this.inProgressStepsIndex++
     }
     this.oQP.inprogress = this.inProgressSteps[this.inProgressStepsIndex]
-    var { inprogress, ...rest } = DEFAULT_ORDERS_QUERY_PARAMS
+    var { inprogress, ...rest } = this.getDefaultQueryParams(this.appConfig, <UserRole>this.userToken.role)
 
     switch (this.oQP.inprogress) {
       case '0':
@@ -227,6 +231,20 @@ export class OrdersFiltersComponent implements OnInit, OnDestroy, AfterContentIn
     this.inProgressStepsIndex = this.findIndex(this.inProgressSteps, this.oQP.inprogress)
     this.reservationsStepsIndex = this.findIndex(this.reservationsSteps, this.oQP.reservation)
     this.paidStepsIndex = this.findIndex(this.reservationsSteps, this.oQP.reservation)
+  }
+
+
+  getDefaultQueryParams(appConfig: AppConfig, role: UserRole, page: number = 1): OrderQueryParams {
+
+    var fstate: FilterState = (role == UserRole.admin) ? appConfig.data.defaultFiltersStates.admin : appConfig.data.defaultFiltersStates.waiter
+    var qp: OrderQueryParams = {
+      page: page,
+      sts: fstate.sts.join('|'),
+      paid: fstate.paid,
+      reservation: fstate.reservation,
+      inprogress: fstate.inprogress
+    }
+    return qp
   }
 
   ngOnDestroy(): void {

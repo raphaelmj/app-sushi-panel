@@ -1,3 +1,4 @@
+import { AppConfig } from './../../models/app-config';
 import { OrderElementStatusChangeRefreshService } from './../../services/socket-oi/order-element-status-change-refresh.service';
 import { RefreshAfterDeleteOrderService } from './../../services/socket-oi/refresh-after-delete-order.service';
 import { RefreshAfterCronInprogressService } from './../../services/socket-oi/refresh-after-cron-inprogress.service';
@@ -26,6 +27,7 @@ export class OrdersBoardComponent implements OnInit, OnDestroy {
   orders: CartOrder[] = [];
   total: number = 0;
   pages: number = 0;
+  appConfig: AppConfig
   subOrders: Subscription;
   subRoute: Subscription;
   subRefresh: Subscription;
@@ -65,6 +67,7 @@ export class OrdersBoardComponent implements OnInit, OnDestroy {
     this.reservations = this.activatedRoute.snapshot.data["ordersData"].reservations
     this.archives = this.activatedRoute.snapshot.data["ordersData"].archives
     this.inProgress = this.activatedRoute.snapshot.data["ordersData"].inProgress
+    this.appConfig = this.activatedRoute.snapshot.data['config']
     this.currentDay = moment(this.oQP.day).toDate();
     this.countPages();
     this.socketEventsListenService.startListen(this.userToken)

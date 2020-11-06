@@ -13,20 +13,32 @@ export class UserService {
     this.apiUrl = API_URL;
   }
 
-  checkLoginAndMakeToken(nick: string, password: string, role: string): Promise<any> {
+  // checkLoginAndMakeToken(nick: string, password: string, role: string): Promise<any> {
+  //   const options = {
+  //     headers: new HttpHeaders({ 'Content-type': 'application/json' }),
+  //   };
+  //   return this.httpClient
+  //     .post(
+  //       this.apiUrl + '/api/auth/login',
+  //       { nick: nick, password: password, role },
+  //       options,
+  //     )
+  //     .toPromise()
+  //     .then((res: Response) => {
+  //       return res || {};
+  //     });
+  // }
+
+  checkLoginAndMakeToken(nick: string, password: string, role: string): Observable<{ success: boolean; access_token: string; user?: User, userData?: User, exp?: number }> {
     const options = {
       headers: new HttpHeaders({ 'Content-type': 'application/json' }),
     };
     return this.httpClient
-      .post(
+      .post<{ success: boolean; access_token: string; user?: User; userData?: User }>(
         this.apiUrl + '/api/auth/login',
         { nick: nick, password: password, role },
-        options,
+        options
       )
-      .toPromise()
-      .then((res: Response) => {
-        return res || {};
-      });
   }
 
   isAuth(): Promise<any> {

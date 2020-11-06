@@ -4,6 +4,8 @@
       <div class="row">
         <div class="col-md-12">
           <app-orders-filters
+                              [userToken]="userToken"
+                              [appConfig]="appConfig"
                               [oQP]="oQP"
                               [reservations]="reservations"
                               [archives]="archives"
@@ -17,7 +19,7 @@
   </div>
 
   <div class="grid-board">
-    <app-order-board-square *ngFor="let order of orders; let i = index" [order]="order" [day]="currentDay">
+    <app-order-board-square *ngFor="let order of orders; let i = index" [order]="order" [day]="currentDay" [appConfig]="appConfig">
     </app-order-board-square>
   </div>
 </section>

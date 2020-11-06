@@ -1,3 +1,5 @@
+import { UserTokenResolveService } from './../services/auth/user-token-resolve.service';
+import { ProtectBySuperGuard } from './../guards/protect-by-super.guard';
 import { RedirectIfNotauthGuard } from './../guards/redirect-if-notauth.guard';
 import { PanelComponent } from './panel.component';
 import { NgModule } from '@angular/core';
@@ -7,6 +9,7 @@ const routes: Routes = [
   {
     path: '',
     component: PanelComponent,
+    resolve: { userToken: UserTokenResolveService },
     canActivate: [RedirectIfNotauthGuard],
   },
   {
@@ -38,6 +41,13 @@ const routes: Routes = [
     loadChildren: () =>
       import('./order-menu/order-menu.module').then(m => m.OrderMenuModule),
     canActivate: [RedirectIfNotauthGuard],
+  },
+  {
+    path: 'stats',
+    loadChildren: () =>
+      import('./stats/stats.module').then(m => m.StatsModule),
+    canActivate: [RedirectIfNotauthGuard, ProtectBySuperGuard],
+    canLoad: [ProtectBySuperGuard]
   },
 ];
 

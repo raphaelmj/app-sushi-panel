@@ -47,7 +47,10 @@ section.board {
 
   @media(max-width: 599.98px) {
     margin-top: 74px;
+    min-height: calc(100vh - 124px);
   }
+
+
 }
 
 .pag-nav {

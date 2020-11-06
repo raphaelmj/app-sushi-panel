@@ -1,9 +1,14 @@
+import { UserToken } from 'src/app/models/token-user';
+import { login } from './auth.actions';
+import { User } from './../models/user';
+import { AuthState } from './reducers/index';
 import { Component, OnInit, DoCheck } from '@angular/core';
 import { UserService } from '../services/auth/user.service';
-import { PatternValidator } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NavService } from '../services/auth/nav.service';
 import { UserRole } from '../models/user';
+import { Store } from '@ngrx/store';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-login',
@@ -12,7 +17,7 @@ import { UserRole } from '../models/user';
 })
 export class LoginComponent implements OnInit, DoCheck {
   nick: string = '';
-  password: string = '';
+  password: string = ''; //kampiooshinek21
   role: string = UserRole.waiter;
   spinnerShow: boolean = false;
   isAuthAlert: boolean = false;
@@ -26,6 +31,7 @@ export class LoginComponent implements OnInit, DoCheck {
     private userService: UserService,
     private router: Router,
     private navService: NavService,
+    private store: Store<AuthState>
   ) { }
 
   ngOnInit() {
@@ -40,8 +46,20 @@ export class LoginComponent implements OnInit, DoCheck {
     this.spinnerShow = true;
     this.userService
       .checkLoginAndMakeToken(this.nick, this.password, this.role)
-      .then((res) => {
-
+      .pipe(
+        tap(
+          (res: { success: boolean; access_token: string; user?: User, userData?: User, exp?: number }) => {
+            if (res.success) {
+              var { password, status, ...userToken } = res.user
+              var userT: UserToken = { ...userToken, ...{ exp: res.exp } }
+              var user: User = res.userData
+              var loginAction = login({ userToken: userT, user })
+              this.store.dispatch(loginAction)
+            }
+          }
+        )
+      )
+      .subscribe((res: { success: boolean; access_token: string; user?: User }) => {
 
         this.spinnerShow = false;
 
